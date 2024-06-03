@@ -2,25 +2,30 @@
 import Head from 'next/head';
 import { useState } from 'react';
 const axios = require('axios').default;
+const { useRouter } = require('next/router');
 
 export default function Register() {
 
     const [userId, setUserId] = useState('')
     const [password, setPassword] = useState('')
+    const router = useRouter();
 
     const submitHandler = async (e) => {
         e.preventDefault();
         console.log(userId, password);
-        const data = {
-            userId,
-            password
-        }
-        try {
-            const response = await axios.post('/api/register', data);
-            console.log(response.data);
-        } catch (error) {
-            console.error(error);
-        }
+        await axios.post('/api/register', { userId, password })
+            .then(res => {
+                if (res.status === 201) {
+                    router.push('/api/auth/signin');
+                }
+            })
+            .catch(err => {
+                if (err.response.status === 409) {
+                    alert('User already exists')
+                } else {
+                    alert('Failed to register user')
+                }
+            });
     }
 
     return (
@@ -66,5 +71,6 @@ export default function Register() {
                 </form>
             </div>
         </div>
-    );
-}
+    )
+};
+

@@ -1,9 +1,8 @@
 // Configuration
-
 import NextAuth from 'next-auth';
-import Providers from 'next-auth/providers';
-import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
-import clientPromise from '../../../lib/mongodb';
+import Providers from 'next-auth/providers/credentials';
+import { MongoDBAdapter } from '@auth/mongodb-adapter';
+import clientPromise from '../../../lib/db';
 
 export default NextAuth({
     providers: [
@@ -15,7 +14,7 @@ export default NextAuth({
             },
             authorize: async (credentials) => {
                 const client = await clientPromise;
-                const usersCollection = client.db().collection('users');
+                const usersCollection = client.db('MSYS').collection('users');
                 const user = await usersCollection.findOne({ userId: credentials.userId });
 
                 if (user && user.password === credentials.password) {
