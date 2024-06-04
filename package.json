@@ -9,6 +9,8 @@
     "@auth/mongodb-adapter": "^3.2.0",
     "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
+    "js-cookie": "^3.0.5",
+    "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.7.0",
     "next": "latest",
     "next-auth": "^4.24.7",

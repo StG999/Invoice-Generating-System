@@ -1,11 +1,10 @@
-import clientPromise from '../../lib/mongodb';
+import clientPromise from '../../../lib/mongodb';
 import bcrypt from 'bcrypt';
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method not allowed' })
     }
-    console.log(req.body);
     const { userId, password } = req.body;
     if (!userId || !password) {
         return res.status(400).json({ message: 'Missing userId or password' });
@@ -15,7 +14,6 @@ export default async function handler(req, res) {
 
     const existingUser = await usersCollection.findOne({ userId });
     if (existingUser) {
-        console.log("useralreadyexists!!!!!!!")
         return res.status(409).json({ message: 'User already exists' });
     }
 

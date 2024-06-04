@@ -1,41 +1,38 @@
-// pages/register.js
 import Head from 'next/head';
-import { useState } from 'react';
+const { useState } = require('react');
 const axios = require('axios').default;
 const { useRouter } = require('next/router');
 
-export default function Register() {
 
-    const [userId, setUserId] = useState('')
-    const [password, setPassword] = useState('')
+export default function Login() {
+    const [userId, setUserId] = useState('');
+    const [password, setPassword] = useState('');
     const router = useRouter();
 
-    const submitHandler = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(userId, password);
-        await axios.post('/api/auth/register', { userId, password })
+        axios.post('/api/auth/login', { userId, password })
             .then(res => {
-                if (res.status === 201) {
-                    router.push('/login');
-                }
+                document.cookie = `token=${res.data.token}; path=/`;
+                router.push('/dashboard')
             })
             .catch(err => {
-                if (err.response.status === 409) {
-                    alert('User already exists')
+                if (err.response.status === 401) {
+                    alert('Invalid credentials')
                 } else {
-                    alert('Failed to register user')
+                    alert('Failed to login. Try again later.')
                 }
-            });
+            })
     }
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <Head>
-                <title>User Registration</title>
+                <title>Login</title>
             </Head>
             <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-                <h1 className="text-2xl font-bold mb-6 text-center">Register</h1>
-                <form onSubmit={submitHandler}>
+                <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+                <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label htmlFor="userId" className="block text-gray-700 mb-2">
                             User ID
@@ -66,11 +63,10 @@ export default function Register() {
                         type="submit"
                         className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
                     >
-                        Register
+                        Sign In
                     </button>
                 </form>
             </div>
         </div>
     )
-};
-
+}
