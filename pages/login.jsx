@@ -2,7 +2,7 @@ import Head from 'next/head';
 const { useState } = require('react');
 const axios = require('axios').default;
 const { useRouter } = require('next/router');
-
+import cookies from 'js-cookie';
 
 export default function Login() {
     const [userId, setUserId] = useState('');
@@ -14,6 +14,8 @@ export default function Login() {
         axios.post('/api/auth/login', { userId, password })
             .then(res => {
                 document.cookie = `token=${res.data.token}; path=/`;
+                cookies.set('userId', userId, { expires: 1 });
+
                 router.push('/dashboard')
             })
             .catch(err => {
