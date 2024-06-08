@@ -13,7 +13,8 @@ export default function Login() {
         e.preventDefault();
         axios.post('/api/auth/login', { userId, password })
             .then(res => {
-                document.cookie = `token=${res.data.token}; path=/`;
+                // document.cookie = `token=${res.data.token}; path=/`;
+                cookies.set('token', res.data.token, { expires: 1 });
                 cookies.set('userId', userId, { expires: 1 });
 
                 router.push('/dashboard')
@@ -28,7 +29,7 @@ export default function Login() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="min-h-screen flex items-center justify-center">
             <Head>
                 <title>Login</title>
             </Head>
