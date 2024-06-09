@@ -1,9 +1,19 @@
 import { useState } from 'react';
 import Navbar from '../components/navbar';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 
 export default function CreateInvoice() {
+    const router = useRouter();
     const [items, setItems] = useState([{ name: '', packaging: '', quantity: '', price: '' }]);
     const [grandTotal, setGrandTotal] = useState(0);
+    let defaultDate = new Date()
+
+    const [date, setDate] = useState(defaultDate)
+
+    const onSetDate = (event) => {
+        setDate(new Date(event.target.value))
+    }
 
     const addItem = () => {
         setItems([...items, { name: '', packaging: '', quantity: '', price: '' }]);
@@ -30,8 +40,24 @@ export default function CreateInvoice() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(items)
-        // handle form submission logic here
+        const data = {
+            invoiceNumber: e.target[0].value,
+            date: e.target[1].value,
+            customerName: e.target[2].value,
+            customerAddress: e.target[3].value,
+            items: items,
+            grandTotal: grandTotal
+        }
+        console.log(data)
+        axios.post('/api/create-bill', data)
+            .then(res => {
+                if (res.status === 201) {
+                    router.push('/view/' + data.invoiceNumber);
+                }
+            })
+            .catch(err => {
+                alert('Internal Server Error! Please try again later.');
+            });
     };
 
     return (
@@ -47,7 +73,7 @@ export default function CreateInvoice() {
                         </div>
                         <div className="flex-1">
                             <label className="block text-gray-700">Date</label>
-                            <input required type="date" className="w-full mt-2 p-2 border border-gray-300 rounded-md" />
+                            <input value={date.toLocaleDateString('en-CA')} onChange={onSetDate} required type="date" className="w-full mt-2 p-2 border border-gray-300 rounded-md" />
                         </div>
                     </div>
                     <div className="flex space-x-4">
@@ -82,12 +108,12 @@ export default function CreateInvoice() {
                                     <input required type="number" value={item.price} onChange={(e) => handleItemChange(index, 'price', e.target.value)} className="w-full mt-2 p-2 border border-gray-300 rounded-md" />
                                 </div>
                                 <button onClick={() => removeItem(index)}
-                                    class="relative mt-auto align-middle select-none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs bg-red-500 text-white shadow-md shadow-red-500/20 hover:shadow-lg hover:shadow-red-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
+                                    className="relative mt-auto align-middle select-none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs bg-red-500 text-white shadow-md shadow-red-500/20 hover:shadow-lg hover:shadow-red-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
                                     type="button"
                                 >
                                     <span
-                                        class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                                    ><i class="fas fa-heart" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                        className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                                    ><i className="fas fa-heart" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                     </svg>
                                         </i
@@ -95,21 +121,16 @@ export default function CreateInvoice() {
                                 >
                             </div>
                         ))}
-                        <button type="button" onClick={addItem} className="mt-4 bg-blue-600 text-white p-2 rounded-md">Add Another Item</button>
+                        <button type="button" onClick={addItem} className="mt-4 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700">Add Another Item</button>
                     </div>
                     <div>
                         <label className="block font-semibold text-gray-700">Grand Total: INR {grandTotal.toFixed(2)}</label>
                     </div>
                     <div className="text-center">
-                        <button type="submit" className="bg-blue-600 text-white p-2 rounded-md w-full">Create Bill</button>
+                        <button type="submit" className="bg-blue-500 text-white p-2 rounded-md w-full hover:bg-blue-700">Create Bill</button>
                     </div>
                 </form>
             </div>
-            {/* <!-- from node_modules --> */}
-            <script src="node_modules/@material-tailwind/html@latest/scripts/ripple.js"></script>
-
-            {/* <!-- from cdn --> */}
-            <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/ripple.js"></script>
         </div>
     );
 };
