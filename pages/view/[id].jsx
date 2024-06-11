@@ -6,10 +6,33 @@ import LoadingAnimation from "../../components/loading-animation";
 
 export default function View() {
     const router = useRouter();
-    const invoiceId = useRouter().query.id;
-    const [invoice, setInvoice] = useState(null);
+    let invoiceId = router.query.id;
+    const [invoice, setInvoice] = useState({ invoiceNumber: '', date: '', customerName: '', customerAddress: '', items: [], grandTotal: 0 });
+
+    const editInvoice = async () => {
+        router.push(`/edit/${invoiceId}`);
+    }
+
+    const deleteInvoice = async () => {
+        await axios.delete(`/api/delete-bill/${invoiceId}`)
+            .then(res => {
+                if (res.status === 200) {
+                    router.push('/views');
+                    alert(`Invoice ${invoiceId} deleted successfully!`);
+                }
+                if (res.status === 404) {
+                    alert('Invoice not found!');
+                }
+            })
+            .catch(err => {
+                alert('Internal Server Error! Please try again later.');
+                router.push('/views');
+            });
+    }
 
     useEffect(() => {
+        if (!router.isReady) return;
+        invoiceId = router.query.id;
         const fetchInvoice = async () => {
             await axios.get(`/api/fetch-bill/${invoiceId}`)
                 .then(res => {
@@ -23,7 +46,7 @@ export default function View() {
                 });
         }
         fetchInvoice();
-    }, [invoiceId]);
+    }, [router.isReady, invoice.invoiceId]);
 
     return (
         <div>
@@ -33,8 +56,8 @@ export default function View() {
                     <div className="flex justify-center items-center min-h-screen p-4">
                         <div className="w-full max-w-4xl bg-white shadow-md rounded-lg p-8">
                             <div className="flex justify-end space-x-4 mb-4">
-                                <button className="bg-red-600 text-white p-2 rounded-md hover:bg-red-500">Delete Invoice</button>
-                                <button className="bg-yellow-400 text-black p-2 rounded-md hover:bg-yellow-300">Edit Invoice</button>
+                                <button type="button" onClick={deleteInvoice} className="bg-red-600 text-white p-2 rounded-md hover:bg-red-500">Delete Invoice</button>
+                                <button type="button" onClick={editInvoice} className="bg-yellow-400 text-black p-2 rounded-md hover:bg-yellow-300">Edit Invoice</button>
                             </div>
                             <h2 className="text-2xl font-semibold text-center text-blue-600 mb-6">Maa Sumat Yadav Store</h2>
                             <div className="space-y-6">

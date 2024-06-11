@@ -10,9 +10,10 @@ export default async function handler(req, res) {
     const collection = db.collection('bills');
     try {
         const invoice = await collection.findOne({ invoiceNumber: invoiceId });
-        console.log('invoice in API::::::::::::::::::::', invoice);
+        console.log('FETCH-BILL API(RESPONSE):', invoice);
         res.status(200).json({ invoice });
-    } catch {
+    } catch (err) {
+        console.log('FETCH-BILL API(ERROR):', err);
         return res.status(500).json({ message: 'Failed to fetch invoice' });
     }
 

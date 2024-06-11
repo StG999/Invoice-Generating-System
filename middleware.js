@@ -4,7 +4,7 @@ import cookies from 'js-cookie';
 
 export async function middleware(req, res) {
     const token = req.cookies.get('token')?.value;
-
+    console.log('middleware invoked by: ', req.url);
     if (!token) {
         const url = req.nextUrl.clone()
         url.pathname = '/login'
@@ -30,5 +30,15 @@ export async function middleware(req, res) {
 }
 
 export const config = {
-    matcher: ['/dashboard', '/protected'],
+    matcher: [
+        /*
+         * Match all request paths except for the ones starting with:
+         * - api (API routes)
+         * - _next/static (static files)
+         * - _next/image (image optimization files)
+         * - favicon.ico (favicon file)
+         */
+        '/((?!api|_next/static|_next/image|favicon.ico|login|register).*)',
+    ],
+
 }

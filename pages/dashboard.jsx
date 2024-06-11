@@ -3,28 +3,27 @@ import cookies from 'js-cookie';
 import Navbar from '../components/navbar';
 
 export default function Dashboard(req, res) {
-    const [userId, setUserId] = useState('');
-    const [showComponent, setshowComponent] = useState(false);
-    useEffect(() => {
-        setUserId(cookies.get('userId'));
-    });
+  const [userId, setUserId] = useState('');
+  useEffect(() => {
+    setUserId(cookies.get('userId'));
+  }, [userId]);
 
-    return (
-        <div>
-            <Navbar />
-            <div className="grid">
-                <a href="/create-invoice" className="card">
-                    <h3>New Bill &rarr;</h3>
-                    <p>Create a new invoice for your organization.</p>
-                </a>
+  return (
+    <div>
+      <Navbar />
+      <div className="grid">
+        <a href="/create-invoice" className="card">
+          <h3>New Bill &rarr;</h3>
+          <p>Create a new invoice for your organization.</p>
+        </a>
 
-                <a href="/views" className="card">
-                    <h3>View Bills &rarr;</h3>
-                    <p>View all past bills in the name of your organization.</p>
-                </a>
-            </div>
+        <a href="/views" className="card">
+          <h3>View Bills &rarr;</h3>
+          <p>View all past bills in the name of your organization.</p>
+        </a>
+      </div>
 
-            <style jsx>{`
+      <style jsx>{`
         .grid {
           display: flex;
           align-items: center;
@@ -70,7 +69,7 @@ export default function Dashboard(req, res) {
 
       `}</style>
 
-            <style jsx global>{`
+      <style jsx global>{`
         html,
         body {
           padding: 0;
@@ -93,6 +92,6 @@ export default function Dashboard(req, res) {
           box-sizing: border-box;
         }
       `}</style>
-        </div>
-    )
+    </div>
+  )
 }

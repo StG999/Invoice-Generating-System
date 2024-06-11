@@ -10,9 +10,11 @@ export default async function handler(req, res) {
     const billsCollection = client.db('MSYS').collection('bills');
 
     try {
-        await billsCollection.insertOne(data);
+        const result = await billsCollection.insertOne(data);
+        console.log("CREATE-BILL API (RESULT):", result);
         return res.status(201).json({ message: 'Bill created successfully' });
     } catch (err) {
+        console.log("CREATE-BILL API (ERROR):", err);
         return res.status(500).json({ message: 'Failed to create bill' });
     }
 }
