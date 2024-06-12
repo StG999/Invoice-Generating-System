@@ -1,12 +1,52 @@
 import { useEffect, useState } from 'react';
 import cookies from 'js-cookie';
 import Navbar from '../components/navbar';
+import axios from 'axios';
 
 export default function Dashboard(req, res) {
   const [userId, setUserId] = useState('');
   useEffect(() => {
     setUserId(cookies.get('userId'));
   }, [userId]);
+
+  const callPython = async () => {
+    // const response = await fetch('http://localhost:5000/generateBill');
+    // const data = await response.json();
+    const params = {
+      'invoiceNumber': '001',
+      'date': "2003-07-30",
+      'customerName': 'John Doe',
+      'customerAddress': '1234 Elm Street',
+      'items': [
+        {
+          'name': 'Item 1',
+          'packaging': '100gm',
+          'quantity': 2,
+          'rate': 69
+        },
+        {
+          'name': 'Item 2',
+          'packaging': '1pc',
+          'quantity': 3,
+          'rate': 99
+        },
+        {
+          'name': 'Item 3',
+          'packaging': '10pc',
+          'quantity': 2,
+          'rate': 26
+        }
+      ],
+      'grandTotal': 1234.56,
+    }
+    axios.post('http://localhost:5000/generateBill', params)
+      .then((response) => {
+        console.log('pythonAPI RESPONSE: ', response)
+      })
+      .catch((error) => {
+        console.log('pythonAPI ERROR: ', error)
+      });
+  }
 
   return (
     <div>
@@ -21,6 +61,9 @@ export default function Dashboard(req, res) {
           <h3>View Bills &rarr;</h3>
           <p>View all past bills in the name of your organization.</p>
         </a>
+        <button onClick={callPython}>
+          PYTHON
+        </button>
       </div>
 
       <style jsx>{`
