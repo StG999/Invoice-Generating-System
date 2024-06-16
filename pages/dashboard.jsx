@@ -15,8 +15,8 @@ export default function Dashboard(req, res) {
     const params = {
       'invoiceNumber': '001',
       'date': "2003-07-30",
-      'customerName': 'John Doe',
-      'customerAddress': '1234 Elm Street',
+      'customerName': 'StG',
+      'customerAddress': 'Delhi',
       'items': [
         {
           'name': 'Item 1',

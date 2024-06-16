@@ -57,6 +57,7 @@ def api():
         # 3. create bill using the params
         # 4. convert the newBill.xslx to pdf
         # 5. send the pdf as response
+        # ON MOUSE DOWN COLOURS TO BE ADDED TO BUTTONS TO SHOW CLICK AFFIRMLY!!!
         
         
         return make_response('Success', 200)
