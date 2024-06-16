@@ -1,5 +1,8 @@
 import openpyxl
 from num2words import num2words
+from win32com import client 
+import pythoncom
+import os
 
 def getGrandTotalString(grandTotal):
     grandTotal = float(grandTotal)
@@ -38,3 +41,17 @@ def createNewBill(invoiceNumber, date, customerName, customerAddress, items, gra
     stringGrandTotal = getGrandTotalString(grandTotal)
     ws['I29'] = stringGrandTotal
     wb.save('newBill.xlsx')
+
+def convertToPdf():
+    # Open Microsoft Excel 
+    pythoncom.CoInitialize()
+    path = os.getcwd()
+    excel = client.Dispatch("\Excel.Application") 
+    
+    # Read Excel File 
+    sheets = excel.Workbooks.Open(path + '/newBill.xlsx') 
+    work_sheets = sheets.Worksheets[0] 
+    
+    # Convert into PDF File 
+    work_sheets.ExportAsFixedFormat(0, path + '/newBill.pdf') 
+    sheets.Close()

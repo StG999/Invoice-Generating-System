@@ -13,9 +13,9 @@ export default function Dashboard(req, res) {
     // const response = await fetch('http://localhost:5000/generateBill');
     // const data = await response.json();
     const params = {
-      'invoiceNumber': '001',
+      'invoiceNumber': '005',
       'date': "2003-07-30",
-      'customerName': 'StG',
+      'customerName': 'Siddhant Yadav',
       'customerAddress': 'Delhi',
       'items': [
         {
@@ -37,7 +37,7 @@ export default function Dashboard(req, res) {
           'rate': 26
         }
       ],
-      'grandTotal': 1234.56,
+      'grandTotal': 487,
     }
     axios.post('http://localhost:5000/generateBill', params)
       .then((response) => {
